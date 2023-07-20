@@ -5,11 +5,11 @@ using namespace std;
 // } Driver Code Ends
 class Solution {
   private:
-  bool dfsCheck(int src, vector<int> adj[], int vis[], int pathVis[])
+  bool dfsCheck(int src, vector<int> adj[], int vis[])
   {
       // step 1: mark node visited and mark it on the current path
       vis[src] = 1;
-      pathVis[src] = 1;
+      vis[src]++;
       
       // traversing for neighbouring nodes
       for( auto &it : adj[src])
@@ -17,13 +17,13 @@ class Solution {
           // if it is not visited : make dfs call for it
           if( !vis[it])
           {
-              if( dfsCheck(it, adj, vis, pathVis) == true ) return true;
+              if( dfsCheck(it, adj, vis) == true ) return true;
           }
           // if it is visited check if it is visited on the same path
-          else if( pathVis[it]) return true;
+          else if( vis[it] == 2) return true;
       }
       // before moving back we will unmark the node from current path
-      pathVis[src] = 0;
+      vis[src]--;
       return false;
       
   }
@@ -31,15 +31,17 @@ class Solution {
   public:
     // Function to detect cycle in a directed graph.
     bool isCyclic(int V, vector<int> adj[]) {
-        int vis[V] = {0}; //to keep track of visited node in traversal
-        
-        int pathVis[V] = {0};// to keep track of visited node in the current path
+        // using only 1 array for keeping track of visited and 
+        // 0 -> unvisited
+        // 1 -> visited but not on current path
+        // 2 -> visited previosly on the current path
+        int vis[V] = {0}; //to keep track of visited nodes and nodes in current path
         
         for( int i = 0; i < V; i++)
         {
             if( !vis[i])
             {
-                if( dfsCheck(i, adj, vis, pathVis) == true) return  true;
+                if( dfsCheck(i, adj, vis) == true) return  true;
             }
         }
         return false;

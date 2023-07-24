@@ -17,13 +17,10 @@ class Solution{
         // converting this problem to graph problem : so that we can use topo sort concept
         vector <int> adj[K];
         
-        for( int i = 0; i < N; i++)
+        for( int i = 0; i < N-1; i++)
         {
-            int j = i+1;
-            if(j < N)
-            {
                 string s1 = dict[i];
-                string s2 = dict[j];
+                string s2 = dict[i+1];
                 for( int m = 0; m < s1.size() && m < s2.size(); m++)
                 {
                     if( s1[m] != s2[m]) // it means s1[m] should come before s2[m]
@@ -35,7 +32,6 @@ class Solution{
                         break;
                     }
                 }
-            }
         }
         
         // now we will perfrom topo-sort

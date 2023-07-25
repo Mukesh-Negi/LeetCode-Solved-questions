@@ -8,33 +8,49 @@ using namespace std;
 //User function template for C++
 
 class Solution{   
-    bool f( int idx, int target, vector<int> &arr, vector<vector<int>> &dp)
-    {
-        // base case
-        if( target == 0) return true;
-        
-        if(idx == 0) return (arr[0] == target);
-        
-        if( dp[idx][target] != -1) return dp[idx][target];
-        
-        bool notTake = f(idx-1, target, arr, dp);
-        
-        bool take = false;
-        
-        if(arr[idx] <= target)
-        {
-            take = f(idx-1, target-arr[idx], arr, dp);
-        }
-        
-        return dp[idx][target] =  take || notTake;
-    }
 public:
     bool isSubsetSum(vector<int>arr, int sum){
-        // solving using rcn- memoization
-        int n = arr.size();
-        vector<vector<int>> dp(n, vector<int>(sum+1, -1));
         
-        return f( n-1, sum, arr, dp);
+        // solving using tabulation
+        
+        int n = arr.size();
+        
+        vector<vector<bool>> dp(n, vector<bool>(sum+1, false));
+        
+        //f(i, target) :-> represents if there is any subset from 0 to i with sum = target.
+        
+        // for any index i if target = 0 the value is true
+        
+        for( int i = 0; i < n; i++)
+        {
+            dp[i][0] = true;
+        }
+        
+        // from index 0 only 1 subset can be formed 
+        
+        if(arr[0] <= sum)
+        {
+            dp[0][arr[0]] = true;
+        }
+        
+        // now we have filled known values on the basis of this we will
+        // unknown values
+        for( int i = 1; i < n; i++) // this for loop represents indexes or array
+        {
+            for( int target = 0; target<= sum; target++) //all possible values of target for each index 
+            {
+                bool notPick = dp[i-1][target];
+                
+                bool pick = false;
+                if( arr[i] <= target)
+                {
+                    pick = dp[i-1][target-arr[i]];
+                }
+                
+                dp[i][target] = pick || notPick;
+            }
+        }
+        return dp[n-1][sum];
     }
 };
 

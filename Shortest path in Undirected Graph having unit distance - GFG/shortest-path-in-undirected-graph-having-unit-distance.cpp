@@ -11,7 +11,7 @@ class Solution {
     vector<int> shortestPath(vector<vector<int>>& edges, int N,int M, int src){
         
         vector<int> adj[N];
-        for( auto &vect : edges)
+        for(auto &vect : edges)
         {
             int u = vect[0];
             int v = vect[1];
@@ -19,26 +19,37 @@ class Solution {
             adj[v].push_back(u);
         }
         
-        vector <int> dist(N, -1);
+        vector<int> dist(N, INT_MAX);
         dist[src] = 0;
         queue<int> Q;
         Q.push(src);
-        
-        while(!Q.empty())
+        while (!Q.empty())
         {
             int node = Q.front();
             Q.pop();
             
             for( auto it : adj[node])
             {
-                if(dist[it] == -1)
+                if(dist[node] + 1 < dist[it])
                 {
                     dist[it] = dist[node] + 1;
                     Q.push(it);
                 }
             }
         }
-        return dist;
+        vector <int> ans;
+        for( int i = 0; i < N; i++)
+        {
+            if(dist[i] == INT_MAX)
+            {
+                ans.push_back(-1);
+            }
+            else
+            {
+                ans.push_back(dist[i]);
+            }
+        }
+        return ans;
     }
 };
 

@@ -4,54 +4,56 @@ using namespace std;
 
 // } Driver Code Ends
 class Solution {
+    private:
+    int m = 1e9 + 7;
+    int f( int idx, int target, vector<int> &arr, vector <vector<int>> &dp)
+    {
+        if( idx == 0)
+        {
+            if( target == 0 && arr[0] == 0) return 2;
+            
+            if( target == 0) return 1;// target is 0 but arr[0] is not 0
+            
+            if( arr[0] == target) return 1;
+            
+            return 0;
+        }
+        
+        if( dp[idx][target] != -1) return dp[idx][target];
+        
+        int notPick = f(idx-1, target, arr, dp);
+        
+        int pick = 0;
+        
+        if( arr[idx] <= target)
+        {
+            pick = f(idx-1, target-arr[idx], arr, dp);
+        }
+        
+        return dp[idx][target] = (pick + notPick) % m;
+    }
   public:
     int countPartitions(int n, int d, vector<int>& arr) {
         
+        // using striver's approach
         
-        // tabulation gives tle, let's try space optimization
-        int m = 1e9 + 7;
+        /*
+        s1 - s2 = d    && s1 > s2
+        s1 + s2 = s
+        s2 = (s - d)/2
+        */
         
         int totSum = accumulate(arr.begin(), arr.end(), 0);
+        // edge cases
+        if( totSum - d < 0) return 0;
         
-        // dp matrix reresents : dp[idx][target]
-        vector<int> prev(totSum+1, 0);
+        if( (totSum - d) % 2 == 1) return 0;
         
-        prev[0] = 1;
+        int target = (totSum-d)/2;
         
-        if( arr[0] <= totSum) prev[arr[0]]++;
+        vector <vector<int>> dp(n, vector<int>(target + 1, -1) );
         
-        for( int i = 1; i < n; i++)
-        {
-            vector <int> curr(totSum+1, 0);
-            for( int target = 0; target <=totSum; target++)
-            {
-                int  notPick = prev[target] % m;
-                int pick = 0;
-                if( arr[i] <= target)
-                {
-                    pick = prev[target-arr[i]] % m;
-                }
-                curr[target] = pick + notPick;
-            }
-            prev = curr;
-        }
-        
-        // now in last row there will be true for possible values of s1
-        int cnt = 0;
-        for( int i = 0; i <=totSum; i++)
-        {
-            if(prev[i] != 0)
-            {
-                int tot = prev[i] % m ;
-                int s1 = i ;
-                int s2 = (totSum - i);
-                if( (s1 >= s2) && (s1-s2 == d))
-                {
-                    cnt += tot;
-                }
-            }
-        }
-        return cnt%m;
+        return  f(n-1,target, arr, dp);
     }
 };
 

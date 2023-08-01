@@ -11,21 +11,23 @@ public:
 	// calculate the maximum sum with out adjacent
 	int findMaxSum(int *arr, int n) {
 	    
-	    // solving using tabulation
-	    vector <int> dp(n, -1);
-	    dp[0] = arr[0];
+	    /* space optmimized solution
+	    dp[i] = max( dp[i-1], dp[i-2] + arr[i])
+	    to calculate any value of i we just need last two values.
+	    */
+	    int prev2 = 0;
+	    int prev1 = arr[0];
 	    
 	    for( int i = 1; i < n; i++)
 	    {
-	        int notPick = 0 + dp[i-1];
-	        int pick = arr[i];
-	        if( i > 1)
-	        {
-	            pick += dp[i-2];
-	        }
-	        dp[i] = max(pick, notPick);
+	        int currMax;
+	        int pick = arr[i] + prev2;
+	        int notPick = prev1;
+	        currMax = max(pick, notPick);
+	        prev2 = prev1;
+	        prev1 = currMax;
 	    }
-	    return dp[n-1];
+	    return prev1;
 	}
 };
 

@@ -10,29 +10,34 @@ class Solution
     //from the source vertex S.
     vector <int> dijkstra(int V, vector<vector<int>> adj[], int S)
     {
-        // declaring min-heap to store {distance, node}
-        priority_queue < pair<int, int>, vector <pair<int, int>>, greater<pair<int, int>> > pq;
+        // dikstra using set
+        set < pair<int, int> > st;
         
         vector <int> dist(V, INT_MAX);
+        st.insert({0, S});
         dist[S] = 0;
         
-        pq.push({0, S});
-        
-        while( !pq.empty())
+        while( !st.empty())
         {
-            int dis = pq.top().first;
-            int node = pq.top().second;
-            pq.pop();
+            auto pr = *(st.begin());
+            int node = pr.second;
+            int dis = pr.first;
+            st.erase(pr);
             
             for( auto &vect : adj[node])
             {
                 int adjNode = vect[0];
-                int wt = vect[1];
+                int edgW = vect[1];
                 
-                if(dis + wt < dist[adjNode])
+                if( dis + edgW < dist[adjNode])
                 {
-                    dist[adjNode] = dis + wt;
-                    pq.push({dist[adjNode], adjNode});
+                    if( dist[adjNode] != INT_MAX) // erase the value for longer dist path
+                    {
+                        st.erase( { dist[adjNode], adjNode} );
+                    }
+                    
+                    dist[adjNode] = dis + edgW;
+                    st.insert( { dist[adjNode], adjNode });
                 }
             }
         }

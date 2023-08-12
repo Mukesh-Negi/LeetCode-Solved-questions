@@ -11,32 +11,32 @@ class Solution{
 public:
     int knapSack(int N, int W, int val[], int wt[])
     {
-        // Tabulation solution.
+        // space optimization using single array
         
-        vector <vector<int>> dp(N, vector <int> (W+1, 0));
+        vector <int> prev(W+1, 0);
         
-        for( int cap = 0; cap <= W; cap++)
+        for( int cap = 0; cap <=W; cap++)
         {
-            dp[0][cap] = val[0] * (cap/wt[0]);
+            prev[cap] = val[0] * (cap/wt[0]);
         }
         
-        for (int i = 1; i < N; i++)
+        for( int i = 1; i < N; i++)
         {
             for( int cap = 1; cap <= W; cap++)
             {
-                int notTake = 0 + dp[i-1][cap];
+                int notTake = 0 +  prev[cap];
                 
                 int take = 0;
                 
                 if( wt[i] <= cap)
                 {
-                    take = val[i] + dp[i][cap - wt[i]];
+                    take = val[i] + prev[cap - wt[i]];
                 }
                 
-                dp[i][cap] = max(take, notTake);
+                prev[cap] = max(take, notTake);
             }
         }
-        return dp[N-1][W];
+        return prev[W];
     }
 };
 

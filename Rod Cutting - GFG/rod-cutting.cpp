@@ -12,19 +12,20 @@ class Solution{
   public:
     int cutRod(int price[], int n) {
         
-        // tabulation code
-        vector <vector<int>> dp( n, vector<int> (n+1, 0));
+        // space opimization using single row
+        
+        vector <int> prev(n+1, 0);
         
         for( int len = 0; len <= n; len++)
         {
-            dp[0][len] = price[0] * len;
+            prev[len] = price[0]*len;
         }
         
         for( int i = 1; i < n; i++)
         {
             for( int len = 1; len <= n; len++)
             {
-                int notTake = 0 + dp[i-1][len];
+                int notTake = 0 + prev[len];
                 
                 int take = 0;
                 
@@ -32,13 +33,12 @@ class Solution{
                 
                 if( currLen <= len)
                 {
-                    take = price[i] + dp[i][ len - currLen];
+                    take = price[i] + prev[len - currLen];
                 }
-                
-                dp[i][len] = max(take, notTake);
+                prev[len] = max(take, notTake);
             }
         }
-        return dp[n-1][n];
+        return prev[n];
     }
 };
 
